@@ -18,6 +18,8 @@ from sklearn.feature_selection import SelectFromModel
 from sklearn.feature_extraction.text import TfidfVectorizer
 import nltk
 from nltk.stem.porter import *
+from nltk.stem.lancaster import LancasterStemmer
+
 import string
 import re
 
@@ -27,7 +29,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer as VS
 from textstat.textstat import *
 
 stopwords = stopwords = nltk.corpus.stopwords.words("english")
-
+stemmer = LancasterStemmer()
 other_exclusions = ["#ff", "ff", "rt"]
 stopwords.extend(other_exclusions)
 
@@ -222,12 +224,12 @@ def get_tweets_predictions(tweets, perform_prints=True):
     print(len(tweets), " tweets to classify")
 
     print("Loading trained classifier... ")
-    model = joblib.load('final_model.pkl')
+    model = joblib.load('Models/final_model.pkl')
 
     print("Loading other information...")
-    tf_vectorizer = joblib.load('final_tfidf.pkl')
-    idf_vector = joblib.load('final_idf.pkl')
-    pos_vectorizer = joblib.load('final_pos.pkl')
+    tf_vectorizer = joblib.load('Models/final_tfidf.pkl')
+    idf_vector = joblib.load('Models/final_idf.pkl')
+    pos_vectorizer = joblib.load('Models/final_pos.pkl')
     # Load ngram dict
     # Load pos dictionary
     # Load function to transform data
