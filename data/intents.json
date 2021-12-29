@@ -1,0 +1,11 @@
+{"intents": [
+        {"tag": "Hatespeech",
+          "patterns": ["data/hatespeech.csv"],
+          "type": ["Text"]
+        },
+        {"tag": "Offensive",
+          "patterns": ["data/offensive.csv"],
+          "type": ["Text"]
+        }
+]
+}
