@@ -18,7 +18,7 @@ from collections import namedtuple
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-client = commands.Bot(command_prefix='#')
+client = commands.Bot(command_prefix='~')
 
 
 @client.event
@@ -30,24 +30,28 @@ async def on_ready():
 
 
 # create a function that listens on every message, and then responds to it
-@client.listen()
-async def on_message(message):
-    channel = message.channel
+# @client.listen()
+# async def on_message(message):
+#     channel = message.channel
+#
+#     question = Classifier.predict_class(np.array([(str(message.content)), 0]))
+#
+#     if not message.author.bot:
+#         await channel.send(f'{question}')
 
-    question = Classifier.predict_class(np.array([(str(message.content)), 0]))
-
-    if not message.author.bot:
-        await channel.send(f'{question}')
-
-
-client.run(TOKEN)
-
-#create a command function that takes in a message and then responds to it
-@client.command()
-async def toxic(ctx):
+# create a command function that takes in a message and then responds to it
+@client.command(pass_context=True)
+async def toxic(ctx, *, message):
     channel = ctx.channel
 
-    question = Classifier.predict_class(np.array([(str(ctx.content)), 0]))
-
+    question = Classifier.predict_class(np.array([(str(message)), 0]))
+    if(question == 0):
+        response = "damn bro, that is some real hate speech "
+    elif (question == 1):
+        response = "damn bro, that is some real offensive language "
+    else:
+        response = "damn bro, you clean "
     if not ctx.author.bot:
-        await channel.send(f'{question}')
+        await channel.send(f'{response}')
+
+client.run(TOKEN)

@@ -212,11 +212,11 @@ for k, v in pos_vocab.items():
 X = pd.DataFrame(M)
 y = df['class'].astype(int)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=0.1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=2, test_size=0.2)
 
 pipe = Pipeline(
     [('select', SelectFromModel(LogisticRegression(class_weight='balanced',
-                                                   penalty="l1", C=0.01, solver='liblinear'))),
+                                                   penalty="l2", C=0.01, solver='liblinear'))),
      ('model', LogisticRegression(class_weight='balanced', penalty='l2'))])
 
 param_grid = [{}]  # Optionally add parameters here
@@ -232,9 +232,7 @@ y_preds = model.predict(X_test)
 # create a function to predict the class of a string of text
 def predict_class(text):
     feats = get_feature_array(text)
-    print(text)
     text_df = pd.DataFrame(text)
-    print(text.shape)
     tfidf = vectorizer.fit_transform(text).toarray()
 
     tweet_tags = []
@@ -246,11 +244,8 @@ def predict_class(text):
         tweet_tags.append(tag_str)
 
     pos = pos_vectorizer.fit_transform(pd.Series(tweet_tags)).toarray()
-    print(pos.shape, tfidf.shape, feats.shape)
     M = np.concatenate([tfidf, pos, feats], axis=1)
-    print(M.shape)
     final = pd.DataFrame(M)
-    print(X.head())
 
     # check which columns are expected by the model, but not exist in the inference dataframe
     not_existing_cols = [c for c in X.columns.tolist() if c not in final]
@@ -263,9 +258,13 @@ def predict_class(text):
     final.dropna(inplace=True)
     # predict the class of the new dataframe
     preds = model.predict(final)
-    print(model.predict_proba(final))
+    print("******************************************************************************************")
+    print("text is:",text)
+    print("The prediction is:",preds)
+    print("the prediction probability: \n ",model.predict_proba(final))
+    print("******************************************************************************************")
     # if the error threshold is greater than 0.5, then dont return the class
-    if preds[0] == 1 and model.predict_proba(final)[0][1] > 0.6:
+    if preds[0] == 1 and model.predict_proba(final)[0][1] > 0.7:
         return preds[0]
         pass
     elif preds[0] == 0 and model.predict_proba(final)[0][0] > 0.4:
@@ -273,4 +272,3 @@ def predict_class(text):
         pass
     else:
         pass
-
