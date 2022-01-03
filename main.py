@@ -41,14 +41,14 @@ async def on_ready():
 
 # create a command function that takes in a message and then responds to it
 @client.command(pass_context=True)
-async def toxic(ctx, *, message):
+async def test(ctx, *, message):
     channel = ctx.channel
 
     question = Classifier.predict_class(np.array([(str(message)), 0]))
     if(question == 0):
-        response = "damn bro, that is some real hate speech "
+        response = "Message above has been deleted for containing hatespeech"
     elif (question == 1):
-        response = "damn bro, that is some real offensive language "
+        response = "Message above has been deleted for containing offensive language"
     else:
         response = "damn bro, you clean "
     if not ctx.author.bot:

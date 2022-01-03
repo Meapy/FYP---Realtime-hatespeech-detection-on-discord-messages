@@ -70,7 +70,7 @@ vectorizer = TfidfVectorizer(
     smooth_idf=False,
     norm=None,
     decode_error='replace',
-    max_features=10000,
+    max_features=100,
     min_df=0,
     max_df=0.75
 )
@@ -79,11 +79,9 @@ vectorizer = TfidfVectorizer(
 tfidf = vectorizer.fit_transform(tweets).toarray()
 
 print(tfidf.shape)
-vocab = {v: i for i, v in enumerate(vectorizer.get_feature_names())}
+vocab = {v: i for i, v in enumerate(vectorizer.get_feature_names_out())}
 idf_vals = vectorizer.idf_
 idf_dict = {i: idf_vals[i] for i in vocab.values()}  # keys are indices; values are IDF scores
-
-# %%
 tweet_tags = []
 # if the tweet_tags.txt exists in the data folder open it and assign it to the tweet_tags variable, else run the for loop
 try:
@@ -113,18 +111,14 @@ pos_vectorizer = TfidfVectorizer(
     smooth_idf=False,
     norm=None,
     decode_error='replace',
-    max_features=5000,
+    max_features=100,
     min_df=0,
     max_df=0.75,
 )
 
-# %%
-
 # Construct POS TF matrix and get vocab dict
 pos = pos_vectorizer.fit_transform(pd.Series(tweet_tags)).toarray()
-pos_vocab = {v: i for i, v in enumerate(pos_vectorizer.get_feature_names())}
-
-# %%
+pos_vocab = {v: i for i, v in enumerate(pos_vectorizer.get_feature_names_out())}
 
 # Now get other features
 sentiment_analyzer = VS()
