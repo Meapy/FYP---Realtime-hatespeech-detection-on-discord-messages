@@ -228,7 +228,6 @@ def predict_class(text):
     feats = get_feature_array(text)
     text_df = pd.DataFrame(text)
     tfidf = vectorizer.fit_transform(text).toarray()
-
     tweet_tags = []
     for t in text:
         tokens = basic_tokenize(preprocess(t))
@@ -236,11 +235,9 @@ def predict_class(text):
         tag_list = [x[1] for x in tags]
         tag_str = " ".join(tag_list)
         tweet_tags.append(tag_str)
-
     pos = pos_vectorizer.fit_transform(pd.Series(tweet_tags)).toarray()
     M = np.concatenate([tfidf, pos, feats], axis=1)
     final = pd.DataFrame(M)
-
     # check which columns are expected by the model, but not exist in the inference dataframe
     not_existing_cols = [c for c in X.columns.tolist() if c not in final]
     # add this columns to the data frame
@@ -257,7 +254,7 @@ def predict_class(text):
     print("The prediction is:",preds)
     print("the prediction probability: \n ",model.predict_proba(final))
     print("******************************************************************************************")
-    # if the error threshold is greater than 0.5, then dont return the class
+    # if the probably of the prediction is higher than 0.7 and 0.4 respectavility, return the prediction
     if preds[0] == 1 and model.predict_proba(final)[0][1] > 0.7:
         return preds[0]
         pass

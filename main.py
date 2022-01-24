@@ -1,17 +1,10 @@
-import math
 import os
-import io
-import random
-import csv
-import discord
-import datetime
 import Classifier
 import numpy as np
 from discord import opus
 from discord.ext.commands import Bot, has_permissions, CheckFailure, MissingPermissions
 from discord.ext import commands
 from threading import Timer
-import time
 from dotenv import load_dotenv
 from collections import namedtuple
 
@@ -28,29 +21,17 @@ async def on_ready():
     for guild in guilds:
         print(f'{guild.name}(id: {guild.id})')
 
-
-# create a function that listens on every message, and then responds to it
-# @client.listen()
-# async def on_message(message):
-#     channel = message.channel
-#
-#     question = Classifier.predict_class(np.array([(str(message.content)), 0]))
-#
-#     if not message.author.bot:
-#         await channel.send(f'{question}')
-
-# create a command function that takes in a message and then responds to it
 @client.command(pass_context=True)
 async def test(ctx, *, message):
     channel = ctx.channel
 
-    question = Classifier.predict_class(np.array([(str(message)), 0]))
+    question = Classifier.predict_class(np.array([(str(message)), 0])) # Message gets sent to the classifier for prediction
     if(question == 0):
         response = "Message above has been deleted for containing hatespeech"
     elif (question == 1):
         response = "Message above has been deleted for containing offensive language"
     else:
-        response = "damn bro, you clean "
+        response = "No action taken"
     if not ctx.author.bot:
         await channel.send(f'{response}')
 
