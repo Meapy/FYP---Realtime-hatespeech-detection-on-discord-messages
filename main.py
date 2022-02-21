@@ -18,8 +18,9 @@ client = commands.Bot(command_prefix='~')
 async def on_ready():
     guilds = list(client.guilds)
     print(f'{client.user} is connected to the following guilds:\n')
-    for guild in guilds:
-        print(f'{guild.name}(id: {guild.id})')
+    print(f'{guilds[1].name}(id: {guilds[1].id})')
+    # for guild in guilds:
+    #     print(f'{guild.name}(id: {guild.id})')
 
 @client.command(pass_context=True)
 async def test(ctx, *, message):
