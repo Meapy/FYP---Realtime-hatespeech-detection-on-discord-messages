@@ -41,7 +41,7 @@ def process_tweets():
     mention_regex = '@[\w\-]+'
     hashtag_regex = '#[\w\-]+'
     parsed_text = []
-    df = pd.read_csv('data/hatespeech.csv')
+    df = pd.read_csv('data/offensive.csv')
     for i in range(len(df)):
         text = df['tweet'][i]
         # 1) url
@@ -54,6 +54,6 @@ def process_tweets():
         text = re.sub(hashtag_regex, 'HASHTAGHERE', text)
         parsed_text.append(text)
     df['tweet'] = parsed_text
-    df.to_csv('data/hatespeech.csv', index=False)
+    df.to_csv('data/offensive.csv', index=False)
 
 process_tweets()
