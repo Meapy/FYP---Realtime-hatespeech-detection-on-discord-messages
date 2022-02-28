@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 
-df = pd.read_csv('data/labeled_data.csv')
+df = pd.read_csv('data/neither.csv')
 
 
 def split_data(df):
@@ -56,4 +56,17 @@ def process_tweets():
     df['tweet'] = parsed_text
     df.to_csv('data/offensive.csv', index=False)
 
-process_tweets()
+#process_tweets()
+
+#create a function to delete random rows from the dataframe to make sure it has around 1500 rows
+def delete_random_rows(df):
+    """
+    Accepts a dataframe and deletes random rows to make sure it has around 1500 rows
+    :param df:
+    :return:
+    """
+    df = df.sample(frac=1).reset_index(drop=True)
+    df = df.drop(df.index[1500:])
+    df.to_csv('data/neither.csv', index=False)
+
+delete_random_rows(df)
