@@ -6,6 +6,10 @@
         {"tag": "Offensive",
           "patterns": ["data/offensive.csv"],
           "type": ["Text"]
+        },
+        {"tag": "neither",
+          "patterns": ["data/neither.csv"],
+          "type": ["Text"]
         }
 ]
 }
