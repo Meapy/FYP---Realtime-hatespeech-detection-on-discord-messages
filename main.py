@@ -26,10 +26,11 @@ async def on_ready():
 async def test(ctx, *, message):
     channel = ctx.channel
 
-    question = Classifier.predict_class(np.array([(str(message)), 0])) # Message gets sent to the classifier for prediction
-    if(question == 0):
+    question = Classifier.predict_class([message]) # Message gets sent to the classifier for prediction
+    print(question)
+    if question[0] == 0:
         response = "Message above has been deleted for containing hatespeech"
-    elif (question == 1):
+    elif question[0] == 1:
         response = "Message above has been deleted for containing offensive language"
     else:
         response = "No action taken"
