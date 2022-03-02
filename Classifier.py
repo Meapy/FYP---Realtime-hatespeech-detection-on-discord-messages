@@ -63,6 +63,13 @@ def predict_class(message):
      - class (list of int)
     '''
     print("the prediction is: " + str(model.predict(message)))
-    return [np.argmax(pred) for pred in model.predict(message)]
+    print(model.predict(message)[0][1])
+    #if probability > 0.8 return [np.argmax(pred) for pred in model.predict(message)]
+    if model.predict(message)[0][1] > 0.8:
+        return [np.argmax(pred) for pred in model.predict(message)]
+    elif model.predict(message)[0][0] > 0.5:
+        return [np.argmax(pred) for pred in model.predict(message)]
+
+
 
 print(predict_class(["hello"]))
