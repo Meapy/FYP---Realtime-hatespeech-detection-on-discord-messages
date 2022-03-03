@@ -38,6 +38,24 @@ async def on_message(message):
                     await message.add_reaction(str('🔴'))  # red circle eomji
 
 
+@client.event
+async def on_raw_reaction_add(reaction):
+    channel_id = reaction.channel_id
+    channel = client.get_channel(channel_id)
+    # if the reaction is ❗, save the message to a new file
+    if reaction.emoji.name == '❗':
+        # add the message to data/false_flags.txt if the message is not already in the file
+        with open('data/false_flags.txt', 'r') as f:
+            msg = await channel.fetch_message(reaction.message_id)
+            if str(msg.content) not in f.read():
+                with open('data/false_flags.txt', 'a') as f:
+                    msg = await channel.fetch_message(reaction.message_id)
+                    f.write(f'{msg.content}\n')
+            else:
+                print("Message already in file")
+
+
+
 @client.command(pass_context=True)
 async def test(ctx, *, message):
     channel = ctx.channel
@@ -63,5 +81,6 @@ async def clear(ctx, amount=5):
         await ctx.channel.purge(limit=amount + 1)
         await ctx.send(f'Bot has cleared {amount} messages for {member.mention}, ROGER ROGER')
         print(f'Bot has cleared {amount} messages for {member}')
+
 
 client.run(TOKEN)
