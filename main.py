@@ -43,15 +43,34 @@ async def on_raw_reaction_add(reaction):
     channel_id = reaction.channel_id
     channel = client.get_channel(channel_id)
     # if the reaction is ❗, save the message to a new file
-    if reaction.emoji.name == '❗':
-        # add the message to data/false_flags.txt if the message is not already in the file
-        with open('data/false_flags.txt', 'r') as file:
-            message = await channel.fetch_message(reaction.message_id)
-            if str(message.content) not in file.read():
-                with open('data/false_flags.txt', 'a') as f:
-                    f.write(f'{message.content}\n')
-            else:
-                print("Message already in file")
+    if not reaction.member.bot:
+        if reaction.emoji.name == '❗'
+            # add the message to data/reports/neither.txt if the message is not already in the file
+            with open('data/Reports/neither.txt', 'r') as file:
+                message = await channel.fetch_message(reaction.message_id)
+                if str(message.content) not in file.read():
+                    with open('data/Reports/neither.txt', 'a') as f:
+                        f.write(f'{message.content}\n')
+                else:
+                    print("Message already in file")
+        if reaction.emoji.name == '🔴':
+            # add the message to data/reports/neither.txt if the message is not already in the file
+            with open('data/Reports/offensive.txt', 'r') as file:
+                message = await channel.fetch_message(reaction.message_id)
+                if str(message.content) not in file.read():
+                    with open('data/Reports/offensive.txt', 'a') as f:
+                        f.write(f'{message.content}\n')
+                else:
+                    print("Message already in file")
+        if reaction.emoji.name == '❌':
+            # add the message to data/reports/neither.txt if the message is not already in the file
+            with open('data/Reports/hatespeech.txt', 'r') as file:
+                message = await channel.fetch_message(reaction.message_id)
+                if str(message.content) not in file.read():
+                    with open('data/Reports/hatespeech.txt', 'a') as f:
+                        f.write(f'{message.content}\n')
+                else:
+                    print("Message already in file")
 
 
 @client.command(pass_context=True)
