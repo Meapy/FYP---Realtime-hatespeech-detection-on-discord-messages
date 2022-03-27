@@ -44,7 +44,7 @@ async def on_raw_reaction_add(reaction):
     channel = client.get_channel(channel_id)
     # if the reaction is ❗, save the message to a new file
     if not reaction.member.bot:
-        if reaction.emoji.name == '❗'
+        if reaction.emoji.name == '❗':
             # add the message to data/reports/neither.txt if the message is not already in the file
             with open('data/Reports/neither.txt', 'r') as file:
                 message = await channel.fetch_message(reaction.message_id)
