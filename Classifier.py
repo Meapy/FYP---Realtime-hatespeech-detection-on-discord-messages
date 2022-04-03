@@ -24,7 +24,7 @@ def process_tweet(message):
     space_pattern = '\s+'
     giant_url_regex = ('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|'
         '[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
-    mention_regex = '@[\w\-]+'
+    mention_regex = '<@![\w\-]+>'
     parsed_text = []
     text = message
     # 1) url
