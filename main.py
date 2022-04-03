@@ -1,6 +1,7 @@
 import os
 import Classifier
 import numpy as np
+import discord
 from discord import opus
 from discord.ext.commands import Bot, has_permissions, CheckFailure, MissingPermissions
 from discord.ext import commands
@@ -99,5 +100,69 @@ async def clear(ctx, amount=5):
         await ctx.send(f'Bot has cleared {amount} messages for {member.mention}, ROGER ROGER')
         print(f'Bot has cleared {amount} messages for {member}')
 
+
+kick_dict = {'username': 'counter'}
+voted_dict = {'username': 'voted for'}
+@client.command(pass_context=True)
+async def votekick(ctx, userName: discord.User):
+    member = ctx.me
+    voter = ctx.message.author.name
+    if voter not in voted_dict: #check if user has voted before or not, if not then add him to voted tuple
+        voted_dict.update({voter: 'user'})
+
+    if str(voted_dict[voter]) == str(userName.name): #check if the user has voted for the same user before
+        await ctx.send("You have already voted!")
+    else: #add the vote
+        if str.lower(userName.name) == str.lower('Pillow'):
+            await ctx.send(f'You can not vote to mute the creator')
+        elif userName.name not in kick_dict:
+            kick_dict.update({userName.name: 1})
+            voted_dict.update({voter: userName.name})
+        else:
+            kick_dict[userName.name] += 1
+        await ctx.send(f'{kick_dict[userName.name]}/4 people have voted to kick {userName.display_name}')
+
+    if kick_dict[userName.name] == 4: ##once reaches limit, kicks user
+        await ctx.send(f'{userName.display_name} has been kicked')
+        kick_dict.update({userName.name: 0})
+        #await discord.Guild.kick(member.guild, userName)
+
+mute_dict = {'username': 'counter'}
+mvoted_dict = {'username': 'voted for'}
+@client.command(pass_context=True)
+async def votemute(ctx, userName: discord.Member):
+    voter = ctx.message.author.name
+    bot = ctx.me
+    if voter not in mvoted_dict:
+        mvoted_dict.update({voter: 'user'})
+
+    if str(mvoted_dict[voter]) != str(userName.name):
+        if str.lower(userName.name) == str.lower('Pillow'):
+            await ctx.send(f'You can not vote to mute the creator')
+        elif userName.name not in mute_dict:
+            mute_dict.update({userName.name: 1})
+            mvoted_dict.update({voter: userName.name})
+            await ctx.send(f'{mute_dict[userName.name]}/4 people have voted to mute {userName.display_name}')
+        else:
+            mute_dict[userName.name] += 1
+            await ctx.send(f'{mute_dict[userName.name]}/4 people have voted to mute {userName.display_name}')
+
+    else:
+        await ctx.send("You have already voted!")
+
+    try:
+        if mute_dict[userName.name] == 4:
+            mute_dict.update({userName.name: 0})
+            server = bot.guild
+            role = server.get_role(825795491287138324)
+            await userName.add_roles(role)
+            embed = discord.Embed(title="User Muted!",
+                                  description="**{0}** was muted by **{1}**!".format(userName.name, bot),
+                                  color=0xff00f6)
+            await ctx.send(embed=embed)
+            time.sleep(60)
+            await userName.remove_roles(role)
+    except KeyError:
+        print("person not in dict")
 
 client.run(TOKEN)
