@@ -16,21 +16,21 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 
 client = commands.Bot(command_prefix='~')
 
-muted_role = 825795491287138324
+
 
 @client.event
 async def on_ready():
     guilds = list(client.guilds)
     print(f'{client.user} is connected to the following guilds:\n')
     print(f'{guilds[1].name}(id: {guilds[1].id})')
-    # for guild in guilds:
-    #     print(f'{guild.name}(id: {guild.id})')
+    for guild in guilds:
+        print(f'{guild.name}(id: {guild.id})')
 
 
 @client.listen()
 async def on_message(message):
     channel = message.channel
-    question = Classifier.process_tweet(str(message.content))
+    question = Classifier.process_msg(str(message.content))
 
     response = Classifier.predict_class([question])
     if channel.name != 'log':
@@ -54,7 +54,7 @@ async def on_raw_reaction_add(reaction):
                 message = await channel.fetch_message(reaction.message_id)
                 if str(message.content) not in file.read():
                     with open('data/Reports/neither.txt', 'a') as f:
-                        f.write(f'{message.content}\n')
+                        f.write(f'{Classifier.process_msg(str(message.content))}\n')
                 else:
                     print("Message already in file")
         if reaction.emoji.name == '🔴':
@@ -63,7 +63,7 @@ async def on_raw_reaction_add(reaction):
                 message = await channel.fetch_message(reaction.message_id)
                 if str(message.content) not in file.read():
                     with open('data/Reports/offensive.txt', 'a') as f:
-                        f.write(f'{message.content}\n')
+                        f.write(f'{Classifier.process_msg(str(message.content))}\n')
                 else:
                     print("Message already in file")
         if reaction.emoji.name == '❌':
@@ -72,23 +72,9 @@ async def on_raw_reaction_add(reaction):
                 message = await channel.fetch_message(reaction.message_id)
                 if str(message.content) not in file.read():
                     with open('data/Reports/hatespeech.txt', 'a') as f:
-                        f.write(f'{message.content}\n')
+                        f.write(f'{Classifier.process_msg(str(message.content))}\n')
                 else:
                     print("Message already in file")
-
-
-@client.command(pass_context=True)
-async def test(ctx, *, message):
-    channel = ctx.channel
-
-    question = Classifier.predict_class([message])  # Message gets sent to the classifier for prediction
-    print(question)
-    if question[0] == 0:
-        await message.add_reaction(str('\❌'))
-    elif question[0] == 1:
-        await message.add_reaction(str('\🔴'))
-    else:
-        await message.add_reaction(str('\🟢'))
 
 
 @client.command(help="| Clears inputted amount of messages or 5 by default")
@@ -106,16 +92,18 @@ async def clear(ctx, amount=5):
 
 kick_dict = {'username': 'counter'}
 voted_dict = {'username': 'voted for'}
+
+
 @client.command(pass_context=True)
 async def votekick(ctx, userName: discord.User):
     member = ctx.me
     voter = ctx.message.author.name
-    if voter not in voted_dict: #check if user has voted before or not, if not then add him to voted tuple
+    if voter not in voted_dict:  # check if user has voted before or not, if not then add him to voted tuple
         voted_dict.update({voter: 'user'})
 
-    if str(voted_dict[voter]) == str(userName.name): #check if the user has voted for the same user before
+    if str(voted_dict[voter]) == str(userName.name):  # check if the user has voted for the same user before
         await ctx.send("You have already voted!")
-    else: #add the vote
+    else:  # add the vote
         if str.lower(userName.name) == str.lower('Pillow'):
             await ctx.send(f'You can not vote to mute the creator')
         elif userName.name not in kick_dict:
@@ -125,13 +113,16 @@ async def votekick(ctx, userName: discord.User):
             kick_dict[userName.name] += 1
         await ctx.send(f'{kick_dict[userName.name]}/4 people have voted to kick {userName.display_name}')
 
-    if kick_dict[userName.name] == 4: ##once reaches limit, kicks user
+    if kick_dict[userName.name] == 4:  ##once reaches limit, kicks user
         await ctx.send(f'{userName.display_name} has been kicked')
         kick_dict.update({userName.name: 0})
-        #await discord.Guild.kick(member.guild, userName)
+        # await discord.Guild.kick(member.guild, userName)
+
 
 mute_dict = {'username': 'counter'}
 mvoted_dict = {'username': 'voted for'}
+
+
 @client.command(pass_context=True)
 async def votemute(ctx, userName: discord.Member):
     voter = ctx.message.author.name
@@ -156,8 +147,7 @@ async def votemute(ctx, userName: discord.Member):
     try:
         if mute_dict[userName.name] == 4:
             mute_dict.update({userName.name: 0})
-            server = bot.guild
-            role = server.get_role(muted_role)
+            role = discord.utils.get(ctx.guild.roles, name="Muted")
             await userName.add_roles(role)
             embed = discord.Embed(title="User Muted!",
                                   description="**{0}** was muted by **{1}**!".format(userName.name, bot),
@@ -168,21 +158,25 @@ async def votemute(ctx, userName: discord.Member):
     except KeyError:
         print("person not in dict")
 
-@has_permissions(kick_members=True)
+
+#@has_permissions(kick_members=True)
 @client.command(pass_context=True)
 async def mute(ctx, userName: discord.Member):
     bot = ctx.me
     server = bot.guild
-    role = server.get_role(muted_role)
+    role = discord.utils.get(ctx.guild.roles, name="Muted")
     await ctx.send("**{0}** was muted by **{1}**!".format(userName.name, bot))
     await userName.add_roles(role)
 
-@has_permissions(kick_members=True)
+
+#@has_permissions(kick_members=True)
 @client.command(pass_context=True)
 async def unmute(ctx, userName: discord.Member):
     member = ctx.me
     server = member.guild
-    role = server.get_role(muted_role)
+    role = discord.utils.get(ctx.guild.roles, name="Muted")
+    await ctx.send("**{0}** was unmuted".format(userName.name))
     await userName.remove_roles(role)
+
 
 client.run(TOKEN)

@@ -7,7 +7,7 @@ import numpy as np
 
 from keras import backend as K
 
-def process_tweet(message):
+def process_msg(message):
     """
     Accepts a text string and replaces:
     1) urls with URLHERE
@@ -18,7 +18,7 @@ def process_tweet(message):
     This allows us to get standardized counts of urls and mentions
     Without caring about specific people mentioned.
 
-    Returns counts of urls, mentions, and hashtags.
+    Returns the processed string
     :return:
     """
     space_pattern = '\s+'
@@ -87,13 +87,13 @@ model = keras.models.load_model("Prototype3/models/text_classifier_v1",
 def predict_class(message):
     '''predict class of input text
     Args:
-    - reviews (list of strings)
+    - message (list of str)
     Output:
      - class (list of int)
     '''
-    print("the prediction for " + str(message) + " is:" + str(model.predict(message)))
+    print("the prediction for \""  + str(message[0]) + "\" is:" + str(model.predict(message)[0]))
     #if probability > 0.8 return [np.argmax(pred) for pred in model.predict(message)]
-    if model.predict(message)[0][0] > 0.5:
+    if model.predict(message)[0][0] > 0.5: #this all needs to get fixed -----------------------------------------------------------------------
         return [np.argmax(pred) for pred in model.predict(message)]
-    elif model.predict(message)[0][1] > 0.9:
+    elif model.predict(message)[0][1] > 0.85:
         return [np.argmax(pred) for pred in model.predict(message)]
