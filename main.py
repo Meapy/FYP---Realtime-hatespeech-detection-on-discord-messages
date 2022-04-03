@@ -1,4 +1,6 @@
 import os
+from datetime import time
+
 import Classifier
 import numpy as np
 import discord
@@ -164,5 +166,22 @@ async def votemute(ctx, userName: discord.Member):
             await userName.remove_roles(role)
     except KeyError:
         print("person not in dict")
+
+@has_permissions(kick_members=True)
+@client.command(pass_context=True)
+async def mute(ctx, userName: discord.Member):
+    bot = ctx.me
+    server = bot.guild
+    role = server.get_role(825795491287138324)
+    await ctx.send("**{0}** was muted by **{1}**!".format(userName.name, bot))
+    await userName.add_roles(role)
+
+@has_permissions(kick_members=True)
+@client.command(pass_context=True)
+async def unmute(ctx, userName: discord.Member):
+    member = ctx.me
+    server = member.guild
+    role = server.get_role(825795491287138324)
+    await userName.remove_roles(role)
 
 client.run(TOKEN)
