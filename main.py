@@ -2,8 +2,13 @@ import os
 from datetime import time
 
 import Classifier
+import imageProcessing
+
 import numpy as np
 import discord
+
+
+import requests
 from discord import opus
 from discord.ext.commands import Bot, has_permissions, CheckFailure, MissingPermissions
 from discord.ext import commands
@@ -15,7 +20,6 @@ load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 client = commands.Bot(command_prefix='~')
-
 
 
 @client.event
@@ -94,6 +98,16 @@ kick_dict = {'username': 'counter'}
 voted_dict = {'username': 'voted for'}
 
 
+@client.command()
+async def check(ctx, url):
+    img_data = requests.get(url).content
+    with open('data/images/image_name.jpg', 'wb') as handler:
+        handler.write(img_data)
+    img = imageProcessing.setup_image('data\images\image_name.jpg')
+    text = imageProcessing.convert_to_text(img)
+    await ctx.send(text)
+
+
 @client.command(pass_context=True)
 async def votekick(ctx, userName: discord.User):
     member = ctx.me
@@ -159,7 +173,7 @@ async def votemute(ctx, userName: discord.Member):
         print("person not in dict")
 
 
-#@has_permissions(kick_members=True)
+@has_permissions(kick_members=True)
 @client.command(pass_context=True)
 async def mute(ctx, userName: discord.Member):
     bot = ctx.me
@@ -169,7 +183,7 @@ async def mute(ctx, userName: discord.Member):
     await userName.add_roles(role)
 
 
-#@has_permissions(kick_members=True)
+@has_permissions(kick_members=True)
 @client.command(pass_context=True)
 async def unmute(ctx, userName: discord.Member):
     member = ctx.me
@@ -177,6 +191,8 @@ async def unmute(ctx, userName: discord.Member):
     role = discord.utils.get(ctx.guild.roles, name="Muted")
     await ctx.send("**{0}** was unmuted".format(userName.name))
     await userName.remove_roles(role)
+
+
 
 
 client.run(TOKEN)
