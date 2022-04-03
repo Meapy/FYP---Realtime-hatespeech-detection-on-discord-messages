@@ -7,6 +7,35 @@ import numpy as np
 
 from keras import backend as K
 
+def process_tweet(message):
+    """
+    Accepts a text string and replaces:
+    1) urls with URLHERE
+    2) lots of whitespace with one instance
+    3) mentions with MENTIONHERE
+    4) hashtags with HASHTAGHERE
+
+    This allows us to get standardized counts of urls and mentions
+    Without caring about specific people mentioned.
+
+    Returns counts of urls, mentions, and hashtags.
+    :return:
+    """
+    space_pattern = '\s+'
+    giant_url_regex = ('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|'
+        '[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+    mention_regex = '@[\w\-]+'
+    parsed_text = []
+    text = message
+    # 1) url
+    text = re.sub(giant_url_regex, 'URLHERE', text)
+    # 2) lots of whitespace
+    text = re.sub(space_pattern, ' ', text)
+    # 3) mentions
+    text = re.sub(mention_regex, 'MENTIONHERE', text)
+    parsed_text.append(text)
+    return text
+
 
 def balanced_recall(y_true, y_pred):
     """This function calculates the balanced recall metric

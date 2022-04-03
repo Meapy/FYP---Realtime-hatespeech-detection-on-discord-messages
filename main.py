@@ -16,6 +16,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 
 client = commands.Bot(command_prefix='~')
 
+muted_role = 825795491287138324
 
 @client.event
 async def on_ready():
@@ -29,7 +30,7 @@ async def on_ready():
 @client.listen()
 async def on_message(message):
     channel = message.channel
-    question = str(message.content)
+    question = Classifier.process_tweet(str(message.content))
 
     response = Classifier.predict_class([question])
     if channel.name != 'log':
@@ -156,7 +157,7 @@ async def votemute(ctx, userName: discord.Member):
         if mute_dict[userName.name] == 4:
             mute_dict.update({userName.name: 0})
             server = bot.guild
-            role = server.get_role(825795491287138324)
+            role = server.get_role(muted_role)
             await userName.add_roles(role)
             embed = discord.Embed(title="User Muted!",
                                   description="**{0}** was muted by **{1}**!".format(userName.name, bot),
@@ -172,7 +173,7 @@ async def votemute(ctx, userName: discord.Member):
 async def mute(ctx, userName: discord.Member):
     bot = ctx.me
     server = bot.guild
-    role = server.get_role(825795491287138324)
+    role = server.get_role(muted_role)
     await ctx.send("**{0}** was muted by **{1}**!".format(userName.name, bot))
     await userName.add_roles(role)
 
@@ -181,7 +182,7 @@ async def mute(ctx, userName: discord.Member):
 async def unmute(ctx, userName: discord.Member):
     member = ctx.me
     server = member.guild
-    role = server.get_role(825795491287138324)
+    role = server.get_role(muted_role)
     await userName.remove_roles(role)
 
 client.run(TOKEN)
