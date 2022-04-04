@@ -9,8 +9,8 @@ def setup_image(img):
     img = cv2.imread(img)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = gray
-    # apply a thrshold to get image with only b&w (binarization)
-    ret, img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    #only keep the white pixels in the image
+    img = cv2.threshold(img, 180, 255, cv2.THRESH_BINARY)[1]
     # save the thresh holded image
     cv2.imwrite("data/images/output.png", img)
     return img

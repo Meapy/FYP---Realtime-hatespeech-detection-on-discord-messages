@@ -25,7 +25,7 @@ client = commands.Bot(command_prefix='~')
 async def on_ready():
     guilds = list(client.guilds)
     print(f'{client.user} is connected to the following guilds:\n')
-    print(f'{guilds[1].name}(id: {guilds[1].id})')
+    #print(f'{guilds[1].name}(id: {guilds[1].id})')
     for guild in guilds:
         print(f'{guild.name}(id: {guild.id})')
 
@@ -109,8 +109,7 @@ async def clear(ctx, amount=5):
         print(f'Bot has cleared {amount} messages for {member}')
 
 
-kick_dict = {'username': 'counter'}
-voted_dict = {'username': 'voted for'}
+
 
 
 @client.command()
@@ -122,7 +121,8 @@ async def check(ctx, url):
     text = imageProcessing.convert_to_text(img)
     await ctx.send(text)
 
-
+kick_dict = {'username': 'counter'}
+voted_dict = {'username': 'voted for'}
 @client.command(pass_context=True)
 async def votekick(ctx, userName: discord.User):
     member = ctx.me
