@@ -7,7 +7,6 @@ import imageProcessing
 import numpy as np
 import discord
 
-
 import requests
 from discord import opus
 from discord.ext.commands import Bot, has_permissions, CheckFailure, MissingPermissions
@@ -37,15 +36,14 @@ async def on_message(message):
     question = Classifier.process_msg(str(message.content))
 
     response = Classifier.predict_class([question])
-    if channel.name != 'log':
-        if not message.author.bot:
-            if response:
-                if response[0] == 0:
-                    await message.add_reaction(str('❌'))  # red x emoji
-                elif response[0] == 1:
-                    await message.add_reaction(str('🔴'))  # red circle eomji
+    if not message.author.bot:
+        if response:
+            if response[0] == 0:
+                await message.add_reaction(str('❌'))  # red x emoji
+            elif response[0] == 1:
+                await message.add_reaction(str('🔴'))  # red circle eomji
 
-    #check images for hate speech and offensive content
+    # check images for hate speech and offensive content
     if message.attachments:
         img_data = requests.get(message.attachments[0].url).content
         with open('data/images/image_name.jpg', 'wb') as handler:
@@ -53,15 +51,14 @@ async def on_message(message):
         img = imageProcessing.setup_image('data\images\image_name.jpg')
         text = imageProcessing.convert_to_text(img)
         text = Classifier.process_msg(text)
-        response = Classifier.predict_class([text])
-        if channel.name != 'log':
-            if not message.author.bot:
-                if response:
-                    if response[0] == 0:
-                        await message.add_reaction(str('❌'))  # red x emoji
-                    elif response[0] == 1:
-                        await message.add_reaction(str('🔴'))  # red circle eomji
 
+        response = Classifier.predict_class([text])
+        if not message.author.bot:
+            if response:
+                if response[0] == 0:
+                    await message.add_reaction(str('❌'))  # red x emoji
+                elif response[0] == 1:
+                    await message.add_reaction(str('🔴'))  # red circle eomji
 
 
 @client.event
@@ -209,8 +206,6 @@ async def unmute(ctx, userName: discord.Member):
     role = discord.utils.get(ctx.guild.roles, name="Muted")
     await ctx.send("**{0}** was unmuted".format(userName.name))
     await userName.remove_roles(role)
-
-
 
 
 client.run(TOKEN)
