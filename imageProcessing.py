@@ -18,5 +18,5 @@ def setup_image(img):
 def convert_to_text(img):
     # convert the image to text
     data = pytesseract.image_to_data(img, output_type=Output.DICT)
-    text = pytesseract.image_to_string(img)
+    text = pytesseract.image_to_string(img, config='--oem 3 --psm 12')
     return text

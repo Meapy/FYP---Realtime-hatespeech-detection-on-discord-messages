@@ -45,6 +45,24 @@ async def on_message(message):
                 elif response[0] == 1:
                     await message.add_reaction(str('🔴'))  # red circle eomji
 
+    #check images for hate speech and offensive content
+    if message.attachments:
+        img_data = requests.get(message.attachments[0].url).content
+        with open('data/images/image_name.jpg', 'wb') as handler:
+            handler.write(img_data)
+        img = imageProcessing.setup_image('data\images\image_name.jpg')
+        text = imageProcessing.convert_to_text(img)
+        text = Classifier.process_msg(text)
+        response = Classifier.predict_class([text])
+        if channel.name != 'log':
+            if not message.author.bot:
+                if response:
+                    if response[0] == 0:
+                        await message.add_reaction(str('❌'))  # red x emoji
+                    elif response[0] == 1:
+                        await message.add_reaction(str('🔴'))  # red circle eomji
+
+
 
 @client.event
 async def on_raw_reaction_add(reaction):
