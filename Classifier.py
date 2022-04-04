@@ -7,6 +7,7 @@ import numpy as np
 
 from keras import backend as K
 
+
 def process_msg(message):
     """
     Accepts a text string and replaces:
@@ -23,7 +24,7 @@ def process_msg(message):
     """
     space_pattern = '\s+'
     giant_url_regex = ('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|'
-        '[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+                       '[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
     mention_regex = '<@![\w\-]+>'
     parsed_text = []
     text = message
@@ -35,7 +36,6 @@ def process_msg(message):
     text = re.sub(mention_regex, 'MENTIONHERE', text)
     parsed_text.append(text)
     return text
-
 
 
 def balanced_recall(y_true, y_pred):
@@ -92,9 +92,10 @@ def predict_class(message):
     Output:
      - class (list of int)
     '''
-    print("the prediction for \""  + str(message[0]) + "\" is:" + str(model.predict(message)[0]))
-    #if probability > 0.8 return [np.argmax(pred) for pred in model.predict(message)]
-    if model.predict(message)[0][0] > 0.5: #this all needs to get fixed -----------------------------------------------------------------------
+    print("the prediction for \"" + str(message[0]) + "\" is:" + str(model.predict(message)[0]))
+    # if probability > 0.8 return [np.argmax(pred) for pred in model.predict(message)]
+    if model.predict(message)[0][
+        0] > 0.5:  # this all needs to get fixed -----------------------------------------------------------------------
         return [np.argmax(pred) for pred in model.predict(message)]
     elif model.predict(message)[0][1] > 0.85:
         return [np.argmax(pred) for pred in model.predict(message)]
