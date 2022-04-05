@@ -3,17 +3,11 @@ from datetime import time
 
 import Classifier
 import imageProcessing
-
-import numpy as np
 import discord
-
 import requests
-from discord import opus
 from discord.ext.commands import Bot, has_permissions, CheckFailure, MissingPermissions
 from discord.ext import commands
-from threading import Timer
 from dotenv import load_dotenv
-from collections import namedtuple
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -25,18 +19,17 @@ client = commands.Bot(command_prefix='~')
 async def on_ready():
     guilds = list(client.guilds)
     print(f'{client.user} is connected to the following guilds:\n')
-    #print(f'{guilds[1].name}(id: {guilds[1].id})')
+    # print(f'{guilds[1].name}(id: {guilds[1].id})')
     for guild in guilds:
         print(f'{guild.name}(id: {guild.id})')
 
 
 @client.listen()
 async def on_message(message):
-    channel = message.channel
     question = Classifier.process_msg(str(message.content))
 
-    response = Classifier.predict_class([question])
     if not message.author.bot:
+        response = Classifier.predict_class([question])
         if response:
             if response[0] == 0:
                 await message.add_reaction(str('❌'))  # red x emoji
@@ -52,8 +45,8 @@ async def on_message(message):
         text = imageProcessing.convert_to_text(img)
         text = Classifier.process_msg(text)
 
-        response = Classifier.predict_class([text])
         if not message.author.bot:
+            response = Classifier.predict_class([text])
             if response:
                 if response[0] == 0:
                     await message.add_reaction(str('❌'))  # red x emoji
@@ -111,18 +104,10 @@ async def clear(ctx, amount=5):
 
 
 
-
-@client.command()
-async def check(ctx, url):
-    img_data = requests.get(url).content
-    with open('data/images/image_name.jpg', 'wb') as handler:
-        handler.write(img_data)
-    img = imageProcessing.setup_image('data\images\image_name.jpg')
-    text = imageProcessing.convert_to_text(img)
-    await ctx.send(text)
-
 kick_dict = {'username': 'counter'}
 voted_dict = {'username': 'voted for'}
+
+
 @client.command(pass_context=True)
 async def votekick(ctx, userName: discord.User):
     member = ctx.me
