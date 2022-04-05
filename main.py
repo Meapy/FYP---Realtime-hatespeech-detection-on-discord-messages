@@ -26,7 +26,6 @@ async def on_ready():
 
 @client.listen()
 async def on_message(message):
-    channel = message.channel
     question = Classifier.process_msg(str(message.content))
 
     if not message.author.bot:
