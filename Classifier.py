@@ -79,7 +79,7 @@ def balanced_f1_score(y_true, y_pred):
 
 
 # load model
-model = keras.models.load_model("Prototype3/models/text_classifier_v2",
+model = keras.models.load_model("Prototype3/models/text_classifier_v3",
                                 custom_objects={'balanced_recall': balanced_recall,
                                                 'balanced_precision': balanced_precision,
                                                 'balanced_f1_score': balanced_f1_score})

@@ -112,3 +112,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/Prototype3/models/
+/models/
