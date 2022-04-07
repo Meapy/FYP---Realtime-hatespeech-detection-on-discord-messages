@@ -135,8 +135,6 @@ async def votekick(ctx, userName: discord.User):
 
 mute_dict = {'username': 'counter'}
 mvoted_dict = {'username': 'voted for'}
-
-
 @client.command(pass_context=True)
 async def votemute(ctx, userName: discord.Member):
     voter = ctx.message.author.name
