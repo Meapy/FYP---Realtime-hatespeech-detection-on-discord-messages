@@ -6,7 +6,7 @@ Since the invention of the internet, one of the most used technologies is instan
 
 ## Screenshots
 ![](https://media.discordapp.net/attachments/521374756864524289/961891264935100416/unknown.png)
-![](https://media.discordapp.net/attachments/521374756864524289/961891264935100416/unknown.png)
+![](https://media.discordapp.net/attachments/521374756864524289/961892010103558175/unknown.png)
 
 ## Tech/framework used
 Tensorflow
@@ -30,7 +30,71 @@ Multiple Language support
 
 
 ## Code Example
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
+main.py
+```python
+import discord
+from discord import opus
+from discord.ext.commands import Bot
+from discord.ext import commands
+from dotenv import load_dotenv
+load_dotenv()
+TOKEN = os.getenv("DISCORD_TOKEN")
+
+client = commands.Bot(command_prefix='~')
+@client.event
+async def on_ready():
+    guilds = list(client.guilds)
+    print(f'{client.user} is connected to the following guilds:\n')
+    for guild in guilds:
+        print(f'{guild.name}(id: {guild.id})')
+
+client.run(TOKEN)
+```
+Model embeddings
+```python
+import tensorflow_hub as hub
+import tensorflow_text as text
+preprocessor = hub.KerasLayer("https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3")
+encoder = hub.KerasLayer("https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/4")
+
+def get_embeddings(sentences):
+  '''return BERT-like embeddings of input text
+  Args:
+    - sentences: list of strings
+  Output:
+    - BERT-like embeddings: tf.Tensor of shape=(len(sentences), 768)
+  '''
+  preprocessed_text = preprocessor(sentences)
+  return encoder(preprocessed_text)['pooled_output']
+
+get_embeddings([
+    "Hello, what are you doing"]
+)
+```
+Predictions
+```python
+@client.listen()
+async def on_message(message):
+    question = Classifier.process_msg(str(message.content))
+
+    if not message.author.bot:
+        response = Classifier.predict_class([question])
+        if response:
+            if response[0] == 0:
+                await message.add_reaction(str('❌'))  # red x emoji
+            elif response[0] == 1:
+                await message.add_reaction(str('🔴'))  # red circle eomji
+
+
+```
+```python
+    if model.predict(message)[0][0] > 0.5:
+        return [np.argmax(pred) for pred in model.predict(message)]
+    elif model.predict(message)[0][1] > 0.85:
+        return [np.argmax(pred) for pred in model.predict(message)]
+```
+
+
 
 ## Installation & How to use
 clone the repository
