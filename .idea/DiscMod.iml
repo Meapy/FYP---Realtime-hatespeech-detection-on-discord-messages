@@ -3,8 +3,8 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/Prototype3/.ipynb_checkpoints" />
-      <excludeFolder url="file://$MODULE_DIR$/Prototype3/models" />
       <excludeFolder url="file://$MODULE_DIR$/models" />
+      <excludeFolder url="file://$MODULE_DIR$/Prototype3/Models" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (DiscMod)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
