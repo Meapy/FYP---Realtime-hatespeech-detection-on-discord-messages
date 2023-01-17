@@ -79,7 +79,7 @@ def balanced_f1_score(y_true, y_pred):
 
 
 # load model
-model = keras.models.load_model("Prototype3/models/text_classifier_v1",
+model = keras.models.load_model("Prototype3/models/text_classifier_v3",
                                 custom_objects={'balanced_recall': balanced_recall,
                                                 'balanced_precision': balanced_precision,
                                                 'balanced_f1_score': balanced_f1_score})
@@ -95,8 +95,10 @@ def predict_class(message):
     #create a counter each time the function is called
     global counter
     counter += 1
+    np.set_printoptions(suppress=True)
     print(counter, ") The prediction for \"" + str(message[0]) + "\" is:" + str(model.predict(message)[0]))
     # if probability > 0.8 return [np.argmax(pred) for pred in model.predict(message)]
+    #have the numbers to 5 decimal places
     if model.predict(message)[0][0] > 0.5:
         return [np.argmax(pred) for pred in model.predict(message)]
     elif model.predict(message)[0][1] > 0.85:
